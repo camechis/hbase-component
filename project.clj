@@ -1,5 +1,5 @@
 (defproject camechis/hbase-component "0.1.0"
-  :description "A clojure application to do data loads using Spark"
+  :description "a component to use for hbase if using the component framework"
   :url "https://github.com/camechis/hbase-component"
   :dependencies [[org.clojure/clojure "1.7.0"]
                  [org.clojure/tools.logging "0.3.1"]
