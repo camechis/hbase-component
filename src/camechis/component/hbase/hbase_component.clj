@@ -11,14 +11,18 @@
 (defrecord HBase [zkquorum zkport connection]
   component/Lifecycle
   (start [component ]
-    (assoc component :connection
-           (ConnectionFactory/createConnection
-            (doto (HBaseConfiguration/create )
-              (.set "hbase.zookeeper.quorum" zkquorum)
-              (.set "hbase.zookeeper.property.clientPort" zkport)))))
+    (if connection
+      component
+      (assoc component :connection
+             (ConnectionFactory/createConnection
+              (doto (HBaseConfiguration/create )
+                (.set "hbase.zookeeper.quorum" zkquorum)
+                (.set "hbase.zookeeper.property.clientPort" zkport))))))
   (stop [component ]
-    (.close connection)
-    (assoc component :connection nil)))
+    (if-not connection
+      component
+      (do (.close  connection)
+          (assoc component :connection nil)))))
 
 (defn to-bytes [x]
   (Bytes/toBytes x))
