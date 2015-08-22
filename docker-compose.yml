@@ -1,0 +1,11 @@
+hbase:
+  image: nerdammer/hbase:latest
+  ports:
+    - "60000:60000"
+    - "2181:2181"
+    - "60010:60010"
+    - "60020:60020"
+    - "60030:60030"
+  hostname: hbase
+  environment:
+    - JAVA_HOME=/usr/lib/jvm/java-1.7.0-openjdk-1.7.0.85.x86_64/jre
