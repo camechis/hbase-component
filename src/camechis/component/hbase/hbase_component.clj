@@ -21,7 +21,7 @@
     (assoc component :connection nil)))
 
 (defn to-bytes [x]
-  (. Bytes toBytes x))
+  (Bytes/toBytes x))
 
 (defn- ^Put make-put [rk]
   (Put. (to-bytes rk)))
@@ -59,13 +59,13 @@
 (defn put [hbase tbl rk cf data ]
   (let [pobj (make-put rk)
         conn (:connection hbase)
-        htbl (.getTable conn (. TableName valueOf tbl) )]
+        htbl (.getTable conn (TableName/valueOf tbl) )]
     (doseq [ d data ]
-      (. pobj add (to-bytes cf) (to-bytes (name (first d))) (to-bytes (second d))))
+      (.add pobj (to-bytes cf) (to-bytes (name (first d))) (to-bytes (second d))))
     (.put htbl pobj)))
 
 (defn hget [hbase tbl rk cf columns]
-  (let [htbl (.getTable  (:connection hbase)  (. TableName valueOf tbl))
+  (let [htbl (.getTable  (:connection hbase)  (TableName/valueOf tbl))
         gobj (make-get rk)
         resobj (.get htbl gobj ) ]
     (into {}  (map (fn [x]
