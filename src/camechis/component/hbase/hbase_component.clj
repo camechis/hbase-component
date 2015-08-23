@@ -48,7 +48,8 @@
     (catch Exception ex (lg/error ex "An error occured while deleting table"))))
 
 (defn create-table
-  "create table with the given name/column families"
+  "create table with the given name/column families
+  tbl = {:name val :cfs [vals]}"
   [hbase tbl ]
   (try
     (let [adm (.getAdmin (:connection hbase))
@@ -60,7 +61,10 @@
     (catch Exception ex (lg/error ex "An error occured while creating table"))))
 
 
-(defn put [hbase tbl rk cf data ]
+(defn put
+  "add data to cf:table with the given rowkey
+  data = [[col val] [col val]]"
+  [hbase tbl rk cf data ]
   (let [pobj (make-put rk)
         conn (:connection hbase)
         htbl (.getTable conn (TableName/valueOf tbl) )]
@@ -68,7 +72,10 @@
       (.add pobj (to-bytes cf) (to-bytes (name (first d))) (to-bytes (second d))))
     (.put htbl pobj)))
 
-(defn hget [hbase tbl rk cf columns]
+(defn hget
+  "get a row with give rowkey, columns is a vector of column names,
+  return is a map of colum names to values"
+  [hbase tbl rk cf columns]
   (let [htbl (.getTable  (:connection hbase)  (TableName/valueOf tbl))
         gobj (make-get rk)
         resobj (.get htbl gobj ) ]
