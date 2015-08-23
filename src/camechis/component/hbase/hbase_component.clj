@@ -1,6 +1,7 @@
 (ns camechis.component.hbase.hbase-component
   (:require [com.stuartsierra.component :as component]
-            [clojure.tools.logging :as lg])
+            [clojure.tools.logging :as lg]
+            [camechis.component.hbase.byte_utils :as bu])
   (:import [org.apache.hadoop.hbase HBaseConfiguration
             HColumnDescriptor
             HTableDescriptor
@@ -24,14 +25,11 @@
       (do (.close  connection)
           (assoc component :connection nil)))))
 
-(defn to-bytes [x]
-  (Bytes/toBytes x))
-
 (defn- ^Put make-put [rk]
-  (Put. (to-bytes rk)))
+  (Put. (bu/to-bytes rk)))
 
 (defn- ^Get make-get [rk]
-  (Get. (to-bytes rk)))
+  (Get. (bu/to-bytes rk)))
 
 
 (defn new-hbase [zkquorum zkport]
@@ -69,7 +67,7 @@
         conn (:connection hbase)
         htbl (.getTable conn (TableName/valueOf tbl) )]
     (doseq [ d data ]
-      (.add pobj (to-bytes cf) (to-bytes (name (first d))) (to-bytes (second d))))
+      (.add pobj (bu/to-bytes cf) (bu/to-bytes (name (first d))) (bu/to-bytes (second d))))
     (.put htbl pobj)))
 
 (defn hget
@@ -80,6 +78,6 @@
         gobj (make-get rk)
         resobj (.get htbl gobj ) ]
     (into {}  (map (fn [x]
-                     {x (. Bytes toString (.getValue resobj (to-bytes cf)
-                                                     (to-bytes (name x)) ))})
+                     {x (. Bytes toString (.getValue resobj (bu/to-bytes cf)
+                                                     (bu/to-bytes (name x)) ))})
                    columns ))))
