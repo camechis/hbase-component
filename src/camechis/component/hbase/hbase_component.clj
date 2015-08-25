@@ -78,6 +78,6 @@
         gobj (make-get rk)
         resobj (.get htbl gobj ) ]
     (into {}  (map (fn [x]
-                     {x (. Bytes toString (.getValue resobj (bu/to-bytes cf)
+                     {x (Bytes/toString (.getValue resobj (bu/to-bytes cf)
                                                      (bu/to-bytes (name x)) ))})
                    columns ))))
