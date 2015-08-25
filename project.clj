@@ -8,7 +8,7 @@
                  [com.stuartsierra/component "0.2.3"]
                  [org.apache.hbase/hbase-client "1.1.1"]]
   :aot :all
-  :test-paths ["test" "integration-test"]
+  :test-paths ["test" "integ-tests"]
 
   :test-selectors {:default (complement (some-fn :integration))
                    :integration :integration
